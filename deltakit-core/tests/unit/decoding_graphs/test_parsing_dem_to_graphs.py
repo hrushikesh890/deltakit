@@ -1,9 +1,9 @@
 # (c) Copyright Riverlane 2020-2025.
 import math
 
+import pytest
 import stim
 
-import pytest
 from deltakit_core.decoding_graphs import (
     DecodingEdge,
     DecodingHyperEdge,
@@ -12,8 +12,6 @@ from deltakit_core.decoding_graphs import (
     dem_to_decoding_graph_and_logicals,
     dem_to_hypergraph_and_logicals,
 )
-
-from pytest_lazy_fixtures import lf
 
 
 def dem_nodes_edges_logicals_RP_3x3_X_1_round_decomposed_hyper():
@@ -505,7 +503,7 @@ def test_there_are_no_multi_edges_in_the_logicals(dem, dem_to_graph_method):
 
 
 @pytest.mark.parametrize(
-    "dem, expected_weight",
+    ("dem", "expected_weight"),
     [
         (stim.DetectorErrorModel("error(0.1) D0 D1"), 2.1972245773362196),
         (
@@ -591,7 +589,7 @@ class TestDemToDecodingHyperGraph:
         assert DecodingHyperEdge({0, 1}, p_err=0) in graph.edges
 
     @pytest.mark.parametrize(
-        "dem, expected_logicals",
+        ("dem", "expected_logicals"),
         [
             (
                 stim.DetectorErrorModel(
@@ -615,19 +613,22 @@ class TestDemToDecodingHyperGraph:
 
 
 class TestDemToNXGraph:
-    """Test conversion from lestim detector error model to NXDecodingGraph via
+    """Test conversion from stim detector error model to NXDecodingGraph via
     the `dem_to_decoding_graph_and_logicals` function.
     """
 
     @pytest.fixture(
         params=[
             dem_nodes_edges_logicals_repetition_code_4_round_decomposed(),
-            lf("dem_nodes_edges_logicals_RP_3x3_X_1_round_decomposed"),
+            "dem_nodes_edges_logicals_RP_3x3_X_1_round_decomposed",
             dem_nodes_edges_logicals_RP_3x3_Z_2_round_decomposed(),
         ]
     )
-    def dem_nodes_edges_and_logicals(self, request):
-        return request.param
+    def dem_nodes_edges_and_logicals(self, request: pytest.FixtureRequest):
+        param = request.param
+        if isinstance(param, str):
+            param = request.getfixturevalue(param)
+        return param
 
     def test_nx_function_returns_expected_logicals(self, dem_nodes_edges_and_logicals):
         dem, _, _, expected_logicals = dem_nodes_edges_and_logicals
@@ -671,7 +672,7 @@ class TestDemToNXGraph:
         assert DecodingEdge({0, 1}, p_err=0) in graph.edges
 
     @pytest.mark.parametrize(
-        "dem, expected_logicals",
+        ("dem", "expected_logicals"),
         [
             (
                 stim.DetectorErrorModel(
@@ -704,13 +705,14 @@ class TestDemToNXGraph:
         ],
     )
     def test_warning_raised_for_degree_0_edge(self, dem):
-        with pytest.warns(UserWarning):
+        msg = "Degree 0 edge has been skipped over in graph creation."
+        with pytest.warns(UserWarning, match=msg):
             dem_to_decoding_graph_and_logicals(dem)
 
 
 class TestExampleRPlanar3x3x1DemToDecodingGraph:
     """Integration test to verify that the RPlanar 3x3x1
-    lestim detector error model is correctly converted to a QECF NXDecodingGraph object.
+    stim detector error model is correctly converted to a QECF NXDecodingGraph object.
     """
 
     @pytest.fixture(scope="class")

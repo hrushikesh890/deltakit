@@ -4,11 +4,12 @@ from __future__ import annotations
 from pathlib import Path
 from typing import ClassVar
 
-import matplotlib
+import matplotlib as mpl
 import matplotlib.image as img
 import matplotlib.pyplot as plt
 import numpy as np
-from deltakit_explorer import visualisation
+
+from deltakit_explorer import plotting
 from deltakit_explorer.types import QubitCoordinateToDetectorMapping
 
 
@@ -64,7 +65,7 @@ class TestVisualisation:
     def test_detect_rate_plot(self, tmp_path):
         coord_w2 = set({(5, 6), (1, 4), (4, 3), (2, 7)})
         plt.figure(figsize=(6.4, 4.8))
-        visualisation.defect_rates(self.defect_rates, coord_w2)
+        plotting.defect_rates(self.defect_rates, coord_w2)
         path = Path(tmp_path) / "defects_plot.png"
         path_ref = self.resource_folder / "defects_plot.png"
         plt.savefig(path)
@@ -73,11 +74,11 @@ class TestVisualisation:
 
     def test_plot_defect_diagram(self, tmp_path):
         # force matplotlib to use different, windows-compatible backend
-        matplotlib.use("Agg")
+        mpl.use("Agg")
         plt.figure(figsize=(5, 5))
         dr = self.defect_rates[0].copy()
         dr.update(self.defect_rates[1])
-        visualisation.defect_diagram(self.defect_coords, dr)
+        plotting.defect_diagram(self.defect_coords, dr)
         path = Path(tmp_path) / "defects_diagram.png"
         path_ref = self.resource_folder / "defects_diagram.png"
         plt.savefig(path)
@@ -88,7 +89,7 @@ class TestVisualisation:
         stick = np.linspace(-.5, .5, 32).reshape(-1, 1)
         mx = (stick @ stick.T)
         plt.figure(figsize=(5, 5))
-        visualisation.correlation_matrix(mx, QubitCoordinateToDetectorMapping(self.detector_map))
+        plotting.correlation_matrix(mx, QubitCoordinateToDetectorMapping(self.detector_map))
         path = Path(tmp_path) / "corr.png"
         path_ref = self.resource_folder / "corr.png"
         plt.savefig(path)
@@ -97,13 +98,13 @@ class TestVisualisation:
 
     def test_plot_defect_diagram_shifted(self, tmp_path):
         # force matplotlib to use different, windows-compatible backend
-        matplotlib.use("Agg")
+        mpl.use("Agg")
         dr = self.defect_rates[0].copy()
         dr.update(self.defect_rates[1])
         dr = {(k[0] - 10, k[1] - 2): v for k, v in dr.items()}
         dc = {k: (v[0] - 10, v[1] - 2, v[2]) for k, v in self.defect_coords.items()}
         plt.figure(figsize=(5, 5))
-        visualisation.defect_diagram(dc, dr)
+        plotting.defect_diagram(dc, dr)
         path = Path(tmp_path) / "defects_diagram_shifted.png"
         path_ref = self.resource_folder / "defects_diagram.png"
         plt.savefig(path)
