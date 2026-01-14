@@ -4,7 +4,8 @@
 :hidden:
 
 CODE_OF_CONDUCT
-release
+RELEASE
+SECURITY
 ```
 
 Thank you for considering a contribution to Deltakit!
@@ -277,7 +278,11 @@ enforce linting rules, and all packages use `mypy` to enforce typing rules.
 See [`pyproject.toml`](https://github.com/Deltakit/deltakit/blob/main/pyproject.toml) for specific rules.
 
 ### Release
-For more information about release processes, see the [Deltakit release procedure](release.md).
+For more information about release processes, see the [Deltakit release procedure](RELEASE.md).
+
+### Security
+For more information about security, see the [Deltakit security policy](SECURITY.md).
+
 
 ### Contributor License Agreement
 First-time contributors will be asked to agree to a CLA. This will be automated using a GitHub
