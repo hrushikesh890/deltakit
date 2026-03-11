@@ -10,6 +10,7 @@
 | SQLAlchemy                    | 2.0.45      | MIT                                                                                              |
 | Send2Trash                    | 1.8.3       | BSD License                                                                                      |
 | Sphinx                        | 8.2.3       | BSD-2-Clause                                                                                     |
+| adjustText                    | 1.3.0       | MIT                                                                                              |
 | alabaster                     | 1.0.0       | BSD License                                                                                      |
 | annotated-types               | 0.7.0       | MIT License                                                                                      |
 | anyio                         | 4.12.0      | MIT                                                                                              |
@@ -41,19 +42,20 @@
 | debugpy                       | 1.8.19      | MIT License                                                                                      |
 | decorator                     | 5.2.1       | BSD License                                                                                      |
 | defusedxml                    | 0.7.1       | Python Software Foundation License                                                               |
-| deltakit                      | 0.6.1       | Apache-2.0                                                                                       |
-| deltakit                      | 0.6.1       | Apache-2.0                                                                                       |
-| deltakit-circuit              | 0.6.1       | Apache-2.0                                                                                       |
-| deltakit-circuit              | 0.6.1       | Apache-2.0                                                                                       |
-| deltakit-core                 | 0.6.1       | Apache-2.0                                                                                       |
-| deltakit-core                 | 0.6.1       | Apache-2.0                                                                                       |
-| deltakit-decode               | 0.6.1       | Apache-2.0                                                                                       |
-| deltakit-decode               | 0.6.1       | Apache-2.0                                                                                       |
-| deltakit-explorer             | 0.6.1       | Apache-2.0                                                                                       |
-| deltakit-explorer             | 0.6.1       | Apache-2.0                                                                                       |
+| deltakit                      | 0.8.0       | Apache-2.0                                                                                       |
+| deltakit                      | 0.8.0       | Apache-2.0                                                                                       |
+| deltakit-circuit              | 0.7.1       | Apache-2.0                                                                                       |
+| deltakit-circuit              | 0.7.1       | Apache-2.0                                                                                       |
+| deltakit-core                 | 0.7.1       | Apache-2.0                                                                                       |
+| deltakit-core                 | 0.7.1       | Apache-2.0                                                                                       |
+| deltakit-decode               | 0.7.1       | Apache-2.0                                                                                       |
+| deltakit-decode               | 0.7.1       | Apache-2.0                                                                                       |
+| deltakit-explorer             | 0.7.1       | Apache-2.0                                                                                       |
+| deltakit-explorer             | 0.7.1       | Apache-2.0                                                                                       |
 | deptry                        | 0.24.0      | MIT License                                                                                      |
 | dill                          | 0.4.0       | BSD License                                                                                      |
 | distlib                       | 0.4.0       | Python Software Foundation License                                                               |
+| docstring_parser_fork         | 0.0.14      | MIT License                                                                                      |
 | docutils                      | 0.21.2      | BSD License; GNU General Public License (GPL); Public Domain; Python Software Foundation License |
 | dotty-dict                    | 1.3.1       | MIT License                                                                                      |
 | executing                     | 2.2.1       | MIT License                                                                                      |
@@ -156,6 +158,7 @@
 | pycparser                     | 2.23        | BSD License                                                                                      |
 | pydantic                      | 2.12.5      | MIT                                                                                              |
 | pydantic_core                 | 2.41.5      | MIT                                                                                              |
+| pydoclint                     | 0.8.3       | MIT License                                                                                      |
 | pyparsing                     | 3.3.1       | MIT                                                                                              |
 | pytest                        | 9.0.2       | MIT                                                                                              |
 | pytest-cov                    | 7.0.0       | MIT                                                                                              |
@@ -163,7 +166,7 @@
 | python-dateutil               | 2.9.0.post0 | Apache Software License; BSD License                                                             |
 | python-gitlab                 | 6.5.0       | GNU Lesser General Public License v3 (LGPLv3)                                                    |
 | python-json-logger            | 4.0.0       | BSD License                                                                                      |
-| python-semantic-release       | 10.5.3      | MIT                                                                                              |
+| python-semantic-release       | 10.4.1      | MIT                                                                                              |
 | pytz                          | 2025.2      | MIT License                                                                                      |
 | pyzmq                         | 27.1.0      | BSD License                                                                                      |
 | referencing                   | 0.37.0      | MIT                                                                                              |
@@ -207,7 +210,7 @@
 | tinycss2                      | 1.4.0       | BSD License                                                                                      |
 | tomli                         | 2.3.0       | MIT                                                                                              |
 | tomli_w                       | 1.2.0       | MIT License                                                                                      |
-| tomlkit                       | 0.13.3      | MIT License                                                                                      |
+| tomlkit                       | 0.14.0      | MIT License                                                                                      |
 | tornado                       | 6.5.4       | Apache Software License                                                                          |
 | tqdm                          | 4.67.1      | MIT License; Mozilla Public License 2.0 (MPL 2.0)                                                |
 | traitlets                     | 5.14.3      | BSD License                                                                                      |
@@ -227,6 +230,6 @@
 | websocket-client              | 1.9.0       | Apache Software License                                                                          |
 | websockets                    | 15.0.1      | BSD License                                                                                      |
 | widgetsnbextension            | 4.0.15      | BSD License                                                                                      |
-| wrapt                         | 2.0.1       | BSD 2-Clause "Simplified" License                                                                |
+| wrapt                         | 2.0.1       | BSD License                                                                                      |
 | yarl                          | 1.22.0      | Apache Software License                                                                          |
 | zipp                          | 3.23.0      | MIT                                                                                              |

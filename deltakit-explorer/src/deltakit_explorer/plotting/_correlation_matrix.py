@@ -1,6 +1,5 @@
 # (c) Copyright Riverlane 2020-2025.
-"""`visualisation` module aggregates data plotting methods.
-"""
+"""`visualisation` module aggregates data plotting methods."""
 
 from __future__ import annotations
 
@@ -10,35 +9,39 @@ from itertools import chain
 import matplotlib.pyplot as plt
 import numpy as np
 import numpy.typing as npt
-import seaborn as sns
 from matplotlib.ticker import FuncFormatter
 
 from deltakit_explorer.types._types import QubitCoordinateToDetectorMapping
 
 
 def correlation_matrix(
-    matrix: npt.NDArray,
-    qubit_to_detector_mapping: QubitCoordinateToDetectorMapping,
+    matrix: npt.NDArray[np.floating] | Sequence[Sequence[float]],
+    qubit_to_detector_mapping: QubitCoordinateToDetectorMapping
+    | dict[tuple[float, ...], list[int]],
     labels: Sequence[str] = (),
 ):
     """Plot a given correlation matrix as a heatmap.
 
     Args:
-        matrix (npt.NDArray): correlation matrix.
-        qubit_to_detector_mapping (QubitCoordinateToDetectorMapping):
-            {qubit_coordinate_tuple_1: [det_1, det_2, det_2, ...], }
-        labels (Sequence[str]): labels to the qubits.
+        matrix: correlation matrix to plot.
+        qubit_to_detector_mapping: Mapping of detectors to qubit coordinates.
+        labels: labels to the qubits.
 
     Returns:
         matplotlib.plt:
             The plt object containing the drawn heatmap.
+    Raises:
+        ImportError:
+            If seaborn is not installed - please install Visualisation extras.
+
 
     Examples:
 
         Collect the data for a correlation matrix plot::
 
             matrix, mapping = client.get_correlation_matrix(
-                detectors, stim_circuit,
+                detectors,
+                stim_circuit,
                 use_default_noise_model_edges=True,
             )
             plt = correlation_matrix(matrix, mapping)
@@ -48,17 +51,28 @@ def correlation_matrix(
     # create a list of indices of the minor ticks for which to label with
     # the qubit labels such that the labels are in the middle of the major
     # ticks. Sort the labels as they are not guaranteed to be in order.
-    minor_ticks_in_major = len(
-        next(iter(qubit_to_detector_mapping.detector_map.values())))
-    num_major_ticks = len(qubit_to_detector_mapping.detector_map.keys())
+
+    try:
+        import seaborn as sns  # noqa: PLC0415
+    except ImportError as ie:
+        msg = "Seaborn is not installed - please install Visualisation extras"
+        raise ImportError(msg) from ie
+
+    # Harmonise the inputs
+    if isinstance(qubit_to_detector_mapping, QubitCoordinateToDetectorMapping):
+        qubit_to_detector_mapping = qubit_to_detector_mapping.detector_map
+
+    matrix = np.asarray(matrix)
+
+    minor_ticks_in_major = len(next(iter(qubit_to_detector_mapping.values())))
+    num_major_ticks = len(qubit_to_detector_mapping.keys())
     num_ticks = minor_ticks_in_major * num_major_ticks
     num_minor_ticks = num_ticks - num_major_ticks
     ticks_per_major = num_minor_ticks // num_major_ticks
     mid_im = ticks_per_major // 2
     label_indices = [mid_im + (ticks_per_major * i) for i in range(num_major_ticks)]
     sorted_labels = (
-        sorted(qubit_to_detector_mapping.detector_map.keys())
-        if len(labels) == 0 else labels
+        sorted(qubit_to_detector_mapping.keys()) if len(labels) == 0 else labels
     )
 
     def format_func(_, tick_number):
@@ -83,6 +97,7 @@ def correlation_matrix(
     axes.grid(which="minor", color="#AAAAAA", linestyle="--", alpha=0.2)
     return plt
 
+
 def _rotate_defect_rate_points(
     detector_coords: dict,
     defect_rates: dict,
@@ -104,27 +119,24 @@ def _rotate_defect_rate_points(
 
     offset_defect_rates = {}
     for coord, defect_rate in rotated_coord_defect_rates.items():
-        offset_defect_rates[
-            (coord[0] - x_offset, coord[1] - y_offset)
-        ] = defect_rate
+        offset_defect_rates[(coord[0] - x_offset, coord[1] - y_offset)] = defect_rate
 
     return offset_defect_rates
+
 
 def defect_diagram(all_detector_coords: dict, all_defect_rates: dict):
     """Plots defect rates patch diagram given detector coordinates and
     their error rates.
 
     Args:
-        all_detector_coords (Dict): Mapping from coordinates to detector numbers.
-        all_defect_rates (Dict): Defect rates of detectors.
+        all_detector_coords: Mapping from coordinates to detector numbers.
+        all_defect_rates: Defect rates of detectors.
 
     Returns:
         matplotlib.pyplot: matplotlib module
     """
     # rotate coords
-    defect_rates = _rotate_defect_rate_points(
-        all_detector_coords, all_defect_rates
-    )
+    defect_rates = _rotate_defect_rate_points(all_detector_coords, all_defect_rates)
     all_dr_means = defect_rates.values()
     cmap_min, cmap_max = min(all_dr_means), max(all_dr_means)
 
@@ -159,12 +171,9 @@ def defect_diagram(all_detector_coords: dict, all_defect_rates: dict):
         (num_rows - 1 - 1 - 0.5, x - 1, first_row[x])
         for x in np.where(first_row != 0)[0]
     ]
-    bottom_sc_indices = [
-        (-0.5, x - 1, last_row[x]) for x in np.where(last_row != 0)[0]
-    ]
+    bottom_sc_indices = [(-0.5, x - 1, last_row[x]) for x in np.where(last_row != 0)[0]]
     left_sc_indices = [
-        (num_cols - x - 1 - 1, -0.5, first_col[x])
-        for x in np.where(first_col != 0)[0]
+        (num_cols - x - 1 - 1, -0.5, first_col[x]) for x in np.where(first_col != 0)[0]
     ]
     right_sc_indices = [
         (num_cols - x - 1 - 1, num_cols - 1 - 1 - 0.5, last_col[x])
@@ -186,8 +195,7 @@ def defect_diagram(all_detector_coords: dict, all_defect_rates: dict):
     axes.set_xticks([])
     image.axes.invert_yaxis()
     cbar = axes.figure.colorbar(
-        image, ax=axes, shrink=1, orientation="vertical",
-        pad=0.2, label="Defect rate"
+        image, ax=axes, shrink=1, orientation="vertical", pad=0.2, label="Defect rate"
     )
     cbar.set_ticks([0.1, 0.25])
 
@@ -223,11 +231,11 @@ def defect_rates(
     in Google paper https://www.nature.com/articles/s41586-022-05434-1.
 
     Args:
-        defect_rates_series (Iterable[Dict[Tuple[float, ...], List[float]]]):
+        defect_rates_series:
             List of defect rates dictionaries.
             E.g, this can be for the X and Z experiments
             for the Google data set.
-        w2_det_coords (Container[Tuple[float, ...]]):
+        w2_det_coords:
             Coordinates for the weight 2 detectors, so
             that these may be plotted with a separate colour
             and have their average separate from the higher-weight
@@ -246,21 +254,20 @@ def defect_rates(
             experiments = [
                 QECExperiment.from_circuit_and_measurements(
                     folder / "circuit_noisy.stim",
-                    folder / "measurements.b8", DataFormat.B8,
-                    folder / "sweep.b8", DataFormat.B8,
+                    folder / "measurements.b8",
+                    DataFormat.B8,
+                    folder / "sweep.b8",
+                    DataFormat.B8,
                 )
-                for folder
-                in z_and_x_experiment_folders
+                for folder in z_and_x_experiment_folders
             ]
             all_rates = []
             for experiment in experiments:
-                _, rates = client.get_experiment_detectors_and_defect_rates(
-                    experiment
-                )
+                _, rates = client.get_experiment_detectors_and_defect_rates(experiment)
                 all_rates.append(rates)
             defect_rates(
                 all_rates,
-                w2_det_coords=set({(5., 6.), (1., 4.), (4., 3.), (2., 7.)})
+                w2_det_coords=set({(5.0, 6.0), (1.0, 4.0), (4.0, 3.0), (2.0, 7.0)}),
             )
     """
     # ensure these are floats!
@@ -273,24 +280,26 @@ def defect_rates(
                 w2_avg.append(defect_rate)
                 plt.plot(
                     range(1, len(defect_rate) + 1),
-                    defect_rate, color="#ff7500", alpha=0.3
+                    defect_rate,
+                    color="#ff7500",
+                    alpha=0.3,
                 )
             else:
                 w4_avg.append(defect_rate)
                 plt.plot(
                     range(1, len(defect_rate) + 1),
-                    defect_rate, color="#006f62", alpha=0.3
+                    defect_rate,
+                    color="#006f62",
+                    alpha=0.3,
                 )
     w2_detectors = np.mean(w2_avg or [[]], axis=0)
     w4_detectors = np.mean(w4_avg or [[]], axis=0)
     plt.plot(
-        range(1, len(w4_detectors) + 1),
-        w4_detectors,
-        color="#006f62", label="Weight-4")
+        range(1, len(w4_detectors) + 1), w4_detectors, color="#006f62", label="Weight-4"
+    )
     plt.plot(
-        range(1, len(w2_detectors) + 1),
-        w2_detectors,
-        color="#ff7500", label="Weight-2")
+        range(1, len(w2_detectors) + 1), w2_detectors, color="#ff7500", label="Weight-2"
+    )
     plt.xlabel("Round")
     plt.xticks(range(1, len(w4_detectors) + 1))
     plt.ylabel("Defect rate")
