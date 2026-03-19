@@ -6,13 +6,13 @@ import numpy.typing as npt
 import pandas as pd
 
 from deltakit_explorer.analysis import (
-    LogicalErrorProbabilityPerRoundResults,
+    LambdaData,
+    calculate_lambda_and_lambda_stddev,
+    calculate_lep_and_lep_stddev,
     compute_logical_error_per_round,
 )
-from deltakit_explorer.analysis._analysis import calculate_lep_and_lep_stddev
-from deltakit_explorer.analysis._lambda import (
-    LambdaResults,
-    calculate_lambda_and_lambda_stddev,
+from deltakit_explorer.analysis import (
+    LogicalErrorProbabilityPerRoundData as LEPPRData,
 )
 
 
@@ -76,7 +76,7 @@ def compute_lambda_and_stddev_from_results(
 def _compute_lambda_from_results(
     num_rounds_by_distance: Mapping[int, Sequence[int]],
     data: pd.DataFrame,
-) -> LambdaResults:
+) -> LambdaData:
     lepprs: list[float] = []
     leppr_stddevs: list[float] = []
     distances = sorted(num_rounds_by_distance.keys())
@@ -91,7 +91,7 @@ def _compute_lambda_from_results(
 
 def _compute_logical_error_rate_per_round_from_results(
     num_rounds: npt.NDArray[np.int_] | Sequence[int], data: pd.DataFrame
-) -> LogicalErrorProbabilityPerRoundResults:
+) -> LEPPRData:
     num_fails: npt.NDArray[np.int_] | list[int] = []
     max_shots: npt.NDArray[np.int_] | list[int] = []
     for nrounds in num_rounds:

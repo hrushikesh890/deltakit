@@ -7,8 +7,10 @@ import numpy as np
 import pytest
 
 from deltakit_explorer._utils._utils import DELTAKIT_SERVER_URL_ENV
-from deltakit_explorer.analysis._lambda import LambdaResults
-from deltakit_explorer.analysis._leppr import LogicalErrorProbabilityPerRoundResults
+from deltakit_explorer.analysis import LambdaData
+from deltakit_explorer.analysis import (
+    LogicalErrorProbabilityPerRoundData as LEPPRData,
+)
 
 
 def pytest_sessionstart(session):  # noqa: ARG001
@@ -21,8 +23,8 @@ def random_generator():
 
 
 @pytest.fixture
-def lambda_results() -> LambdaResults:
-    return LambdaResults(
+def lambda_results() -> LambdaData:
+    return LambdaData(
         lambda_=3.0,
         lambda_stddev=0.1,
         lambda0=1.5,
@@ -31,8 +33,8 @@ def lambda_results() -> LambdaResults:
 
 
 @pytest.fixture
-def leppr_results() -> LogicalErrorProbabilityPerRoundResults:
-    return LogicalErrorProbabilityPerRoundResults(
+def leppr_results() -> LEPPRData:
+    return LEPPRData(
         leppr=0.001,
         leppr_stddev=0.0001,
         spam_error=0.01,
